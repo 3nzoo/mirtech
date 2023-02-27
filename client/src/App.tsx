@@ -1,34 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useEffect, useRef, useState } from 'react';
+import './App.css';
+import ClientsList from './components/ClientsList';
+import axios from 'axios';
+import { Route, Routes } from 'react-router-dom';
+import AddClient from './components/AddClient';
+import PageNotFound from './components/PageNotFound';
+import { iClient } from './interfaces';
+import { CLIENT_KEY, url } from './constants';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [data, setData] = useState<iClient[]>([]);
+  const effectRan = useRef(false);
+
+  useEffect(() => {
+    if (effectRan.current === true) {
+      const clientJson = localStorage.getItem(CLIENT_KEY);
+
+      if (clientJson?.length) {
+        return setData(JSON.parse(clientJson));
+      } else {
+        const fetchData = async () => {
+          try {
+            const response = await axios.get(`${url}clients`);
+            localStorage.setItem(CLIENT_KEY, JSON.stringify(response.data));
+            setData(response.data);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        fetchData();
+      }
+    }
+
+    return () => {
+      effectRan.current = true;
+    };
+  }, []);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className='App'>
+      <Routes>
+        <Route path='/' element={<ClientsList data={data} />} />
+        <Route path='/addClient' element={<AddClient />} />
+        <Route path='*' element={<PageNotFound />} />
+      </Routes>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
