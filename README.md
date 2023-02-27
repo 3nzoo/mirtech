@@ -38,13 +38,20 @@ $ npm run test
 ## Features
 
 **User can click each CLient to view full info**
+
 **User can toggle the status of each client on Client List view or Individual Client Page**
+
 **User can click each CLient to view full info**
+
 **Click the filter by status to show only active clients**
+
 **Listed dates are all the existing available dates on each client created dates**
+
 **Selecting a specific date will filter clients created on that date**
+
 **Click add new Client to add new Client**
-**if localstorage for clients are empty, it will fetch data from the clients endpoint from the server then store in the localstorage**
+
+**- if localstorage for clients are empty, it will fetch data from the clients endpoint from the server then store in the localstorage**
 
 ## Reminder
 
